@@ -77,7 +77,7 @@ global slice next_contract_addr;
         ctx_counter += increase_by;
         save_data();
 
-        ~dump(next_contract_addr);
+        ~dump([1, now()]);
 
         cell msg = pack_message(
             next_contract_addr,
@@ -104,12 +104,11 @@ global slice next_contract_addr;
 ;; they are marked with method_id
 ;; note that unlike in many other smart contract VMs, get methods cannot be called by other contracts
 
-int get_counter() method_id {
+(int, int) get_counter() method_id {
     load_data();
-    return ctx_counter;
+    return (ctx_counter, now());
 }
 
-int get_id() method_id {
-    load_data();
-    return ctx_id;
+int get_timestamp() method_id {
+    return now();
 }

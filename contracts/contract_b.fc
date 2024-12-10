@@ -46,6 +46,8 @@ global int ctx_counter;
     int op = in_msg_body~load_uint(32); ;; by convention, the first 32 bits of incoming message is the op
     int query_id = in_msg_body~load_uint(64); ;; also by convention, the next 64 bits contain the "query id", although this is not always the case
 
+    ~dump([2, now()]);
+
     if (op == op::increase) {
         int increase_by = in_msg_body~load_uint(32);
         ctx_counter += increase_by;
@@ -56,16 +58,11 @@ global int ctx_counter;
     throw(0xffff); ;; if the message contains an op that is not known to this contract, we throw
 }
 
-;; get methods are a means to conveniently read contract data using, for example, HTTP APIs
-;; they are marked with method_id
-;; note that unlike in many other smart contract VMs, get methods cannot be called by other contracts
-
-int get_counter() method_id {
+(int, int) get_counter() method_id {
     load_data();
-    return ctx_counter;
+    return (ctx_counter, now());
 }
 
-int get_id() method_id {
-    load_data();
-    return ctx_id;
+int get_timestamp() method_id {
+    return now();
 }

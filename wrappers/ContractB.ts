@@ -54,9 +54,12 @@ export class ContractB implements Contract {
         });
     }
 
-    async getCounter(provider: ContractProvider) {
+    async getCounterAndTimestamp(provider: ContractProvider) {
         const result = await provider.get('get_counter', []);
-        return result.stack.readNumber();
+        const counter = result.stack.readNumber();
+        const timestamp = result.stack.readNumber();
+
+        return { counter, timestamp };
     }
 
     async getID(provider: ContractProvider) {
@@ -67,5 +70,10 @@ export class ContractB implements Contract {
     async getBalance(provider: ContractProvider) {
         const result = await provider.getState()
         return result.balance;
+    }
+
+    async getTimestamp(provider: ContractProvider) {
+        const result = await provider.get('get_timestamp', []);
+        return result.stack.readNumber();
     }
 }
